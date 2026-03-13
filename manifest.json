@@ -1,7 +1,7 @@
 {
   "name": "沫沫的小礼物",
-  "short_name": "陪伴",
-  "description": "一份长久的情绪陪伴",
+  "short_name": "gift",
+  "description": "一份小礼物",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f5f7fa",
