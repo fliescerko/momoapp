@@ -1,0 +1,32 @@
+{
+  "name": "情绪陪伴工具",
+  "short_name": "陪伴",
+  "description": "一份长久的情绪陪伴",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f5f7fa",
+  "theme_color": "#667eea",
+  "icons": [
+    {
+      "src": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=simple%20heart%20icon%20with%20soft%20colors%20for%20emotion%20app&image_size=square",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=simple%20heart%20icon%20with%20soft%20colors%20for%20emotion%20app&image_size=square",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "orientation": "portrait",
+  "categories": ["lifestyle", "health"],
+  "screenshots": [
+    {
+      "src": "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=mobile%20app%20screenshot%20of%20emotion%20companion%20app%20with%20quote%20card%20and%20mood%20buttons&image_size=portrait_16_9",
+      "sizes": "1280x720",
+      "type": "image/png"
+    }
+  ]
+}

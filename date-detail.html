@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="一份长久的情绪陪伴">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="apple-touch-icon" href="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=simple%20heart%20icon%20with%20soft%20colors%20for%20emotion%20app&image_size=square">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="情绪陪伴">
+    <title>日期详情 - 情绪陪伴工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            transition: background-color 0.5s ease;
+        }
+        
+        .container {
+            max-width: 400px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .date-display {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .date-display h2 {
+            font-size: 32px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .date-display p {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .mood-section {
+            margin-bottom: 30px;
+        }
+        
+        .mood-section h2 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .mood-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .mood-btn {
+            flex: 1;
+            padding: 12px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 10px;
+            background: #f0f0f0;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .mood-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mood-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .mood-response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 14px;
+            background: #f8f9fa;
+            display: none;
+        }
+        
+        /* 特效容器 */
+        .effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        /* 雨滴特效 */
+        .rain {
+            position: absolute;
+            width: 2px;
+            height: 20px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(174,194,224,1));
+            animation: rain linear infinite;
+        }
+        
+        @keyframes rain {
+            0% {
+                transform: translateY(-20px);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+        
+        /* 生气特效 - 红色气泡 */
+        .angry-bubble {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 99, 71, 0.6);
+            border-radius: 50%;
+            animation: bubble infinite;
+        }
+        
+        @keyframes bubble {
+            0% {
+                transform: translateY(100vh) scale(0.5);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10%) scale(1.2);
+                opacity: 0;
+            }
+        }
+        
+        /* 星星特效 */
+        .star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.5);
+            }
+        }
+        
+        /* 花瓣特效 */
+        .petal {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: pink;
+            border-radius: 150% 0 150% 0;
+            animation: fall linear infinite;
+        }
+        
+        @keyframes fall {
+            0% {
+                transform: translateY(-10%) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .diary-section {
+            margin-bottom: 30px;
+        }
+        
+        .diary-section h2 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .diary-input {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            resize: vertical;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .save-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .save-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+        
+        .mood-record {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .mood-record h2 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .record-content {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+            min-height: 150px;
+        }
+        
+        .record-mood {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .record-text {
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        
+        .back-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+        
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="effects" id="effects"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>日期详情</h1>
+        </div>
+        
+        <div class="date-display">
+            <h2 id="selectedDate"></h2>
+            <p id="dayOfWeek"></p>
+        </div>
+        
+        <div class="mood-section">
+            <h2>记录心情</h2>
+            <div class="mood-buttons">
+                <button class="mood-btn" data-mood="happy">开心</button>
+                <button class="mood-btn" data-mood="sad">难过</button>
+                <button class="mood-btn" data-mood="angry">生气</button>
+                <button class="mood-btn" data-mood="tired">疲惫</button>
+            </div>
+            <div class="mood-response" id="moodResponse"></div>
+        </div>
+        
+        <div class="diary-section">
+            <h2>写日记</h2>
+            <textarea class="diary-input" id="diaryInput" placeholder="记录今天的心情和事情..."></textarea>
+            <button class="save-btn" onclick="saveDiary()">保存日记</button>
+        </div>
+        
+        <div class="mood-record">
+            <h2>日记记录</h2>
+            <div class="record-content" id="recordContent">
+                暂无记录
+            </div>
+        </div>
+        
+        <button class="back-button" onclick="goBack()">返回日历</button>
+    </div>
+    
+    <div class="footer">
+        <p>用爱编织的陪伴工具</p>
+    </div>
+    
+    <script>
+        // 从URL获取日期参数
+        function getDateFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('date');
+        }
+        
+        // 从本地存储获取心情记录
+        function getMoodRecords() {
+            const records = localStorage.getItem('moodRecords');
+            return records ? JSON.parse(records) : [];
+        }
+        
+        // 保存心情记录到本地存储
+        function saveMoodRecord(dateString, mood) {
+            const records = getMoodRecords();
+            const diaryText = document.getElementById('diaryInput').value;
+            
+            // 检查该日期是否已经有记录
+            const existingIndex = records.findIndex(record => record.date === dateString);
+            
+            if (existingIndex !== -1) {
+                // 更新现有记录
+                records[existingIndex].mood = mood;
+                records[existingIndex].diary = diaryText;
+            } else {
+                // 添加新记录
+                records.push({
+                    date: dateString,
+                    mood: mood,
+                    diary: diaryText
+                });
+            }
+            
+            localStorage.setItem('moodRecords', JSON.stringify(records));
+            updateMoodRecordDisplay();
+        }
+        
+        // 清除特效
+        function clearEffects() {
+            const effectsContainer = document.getElementById('effects');
+            effectsContainer.innerHTML = '';
+        }
+        
+        // 花瓣雨特效（开心）
+        function createPetals() {
+            clearEffects();
+            const effectsContainer = document.getElementById('effects');
+            
+            for (let i = 0; i < 50; i++) {
+                const petal = document.createElement('div');
+                petal.classList.add('petal');
+                petal.style.left = Math.random() * 100 + '%';
+                petal.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                petal.style.animationDelay = Math.random() * 2 + 's';
+                petal.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                effectsContainer.appendChild(petal);
+            }
+        }
+        
+        // 雨滴特效（难过）
+        function createRain() {
+            clearEffects();
+            const effectsContainer = document.getElementById('effects');
+            
+            for (let i = 0; i < 100; i++) {
+                const rain = document.createElement('div');
+                rain.classList.add('rain');
+                rain.style.left = Math.random() * 100 + '%';
+                rain.style.animationDuration = (Math.random() * 2 + 1) + 's';
+                rain.style.animationDelay = Math.random() * 2 + 's';
+                effectsContainer.appendChild(rain);
+            }
+        }
+        
+        // 红色气泡特效（生气）
+        function createFire() {
+            clearEffects();
+            const effectsContainer = document.getElementById('effects');
+            
+            for (let i = 0; i < 50; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('angry-bubble');
+                bubble.style.left = Math.random() * 100 + '%';
+                bubble.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                bubble.style.animationDelay = Math.random() * 2 + 's';
+                effectsContainer.appendChild(bubble);
+            }
+        }
+        
+        // 星星特效（疲惫）
+        function createStars() {
+            clearEffects();
+            const effectsContainer = document.getElementById('effects');
+            
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                effectsContainer.appendChild(star);
+            }
+        }
+        
+        // 保存日记
+        function saveDiary() {
+            const dateString = getDateFromUrl();
+            const records = getMoodRecords();
+            const diaryText = document.getElementById('diaryInput').value;
+            
+            // 检查该日期是否已经有记录
+            const existingIndex = records.findIndex(record => record.date === dateString);
+            
+            if (existingIndex !== -1) {
+                // 更新现有记录
+                records[existingIndex].diary = diaryText;
+            } else {
+                // 添加新记录
+                records.push({
+                    date: dateString,
+                    diary: diaryText
+                });
+            }
+            
+            localStorage.setItem('moodRecords', JSON.stringify(records));
+            updateMoodRecordDisplay();
+            
+            // 显示保存成功提示
+            const moodResponse = document.getElementById('moodResponse');
+            moodResponse.textContent = '日记保存成功！';
+            moodResponse.style.display = 'block';
+            
+            // 3秒后隐藏提示
+            setTimeout(() => {
+                moodResponse.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 更新心情记录显示
+        function updateMoodRecordDisplay() {
+            const dateString = getDateFromUrl();
+            const records = getMoodRecords();
+            const record = records.find(r => r.date === dateString);
+            const recordContent = document.getElementById('recordContent');
+            const diaryInput = document.getElementById('diaryInput');
+            
+            if (record) {
+                let moodText = '';
+                if (record.mood) {
+                    switch (record.mood) {
+                        case 'happy': moodText = '开心'; break;
+                        case 'sad': moodText = '难过'; break;
+                        case 'angry': moodText = '生气'; break;
+                        case 'tired': moodText = '疲惫'; break;
+                    }
+                }
+                
+                let displayContent = '';
+                if (moodText) {
+                    displayContent += `<div class="record-mood">心情：${moodText}</div>`;
+                }
+                if (record.diary) {
+                    displayContent += `<div class="record-text">${record.diary}</div>`;
+                }
+                
+                if (displayContent) {
+                    recordContent.innerHTML = displayContent;
+                } else {
+                    recordContent.textContent = '暂无记录';
+                }
+                
+                // 填充日记输入框
+                if (record.diary) {
+                    diaryInput.value = record.diary;
+                }
+                
+                // 高亮选中的心情按钮
+                if (record.mood) {
+                    const moodButtons = document.querySelectorAll('.mood-btn');
+                    moodButtons.forEach(btn => {
+                        if (btn.getAttribute('data-mood') === record.mood) {
+                            btn.classList.add('active');
+                        } else {
+                            btn.classList.remove('active');
+                        }
+                    });
+                }
+            } else {
+                recordContent.textContent = '暂无记录';
+                diaryInput.value = '';
+                
+                // 移除所有心情按钮的选中状态
+                const moodButtons = document.querySelectorAll('.mood-btn');
+                moodButtons.forEach(btn => btn.classList.remove('active'));
+            }
+        }
+        
+        // 处理心情选择
+        function handleMoodSelection() {
+            const moodButtons = document.querySelectorAll('.mood-btn');
+            const moodResponse = document.getElementById('moodResponse');
+            
+            moodButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 移除所有按钮的active类
+                    moodButtons.forEach(btn => btn.classList.remove('active'));
+                    // 添加当前按钮的active类
+                    this.classList.add('active');
+                    
+                    const mood = this.getAttribute('data-mood');
+                    const dateString = getDateFromUrl();
+                    
+                    // 保存心情记录
+                    saveMoodRecord(dateString, mood);
+                    
+                    // 显示相应的回应
+                    moodResponse.style.display = 'block';
+                    
+                    if (mood === 'happy') {
+                        // 花瓣雨特效
+                        createPetals();
+                        moodResponse.textContent = '太好了！保持这份好心情～';
+                        document.body.style.backgroundColor = '#f0f9ff';
+                    } else if (mood === 'tired') {
+                        // 星星特效
+                        createStars();
+                        moodResponse.textContent = '今天辛苦了，好好休息一下';
+                        document.body.style.backgroundColor = '#fff3e0';
+                    } else if (mood === 'sad') {
+                        // 雨滴特效
+                        createRain();
+                        moodResponse.textContent = '别难过，一切都会好起来的';
+                        document.body.style.backgroundColor = '#f3e5f5';
+                    } else if (mood === 'angry') {
+                        // 火焰特效
+                        createFire();
+                        moodResponse.textContent = '深呼吸，平静一下心情';
+                        document.body.style.backgroundColor = '#ffebee';
+                    }
+                });
+            });
+        }
+        
+        // 返回日历页面
+        function goBack() {
+            window.location.href = './index.html';
+        }
+        
+        // 初始化
+        function init() {
+            const dateString = getDateFromUrl();
+            if (!dateString) {
+                goBack();
+                return;
+            }
+            
+            // 显示选中的日期
+            const date = new Date(dateString);
+            const formattedDate = date.toLocaleDateString('zh-CN');
+            const dayOfWeek = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][date.getDay()];
+            
+            document.getElementById('selectedDate').textContent = formattedDate;
+            document.getElementById('dayOfWeek').textContent = dayOfWeek;
+            
+            // 更新心情记录显示
+            updateMoodRecordDisplay();
+            
+            // 处理心情选择
+            handleMoodSelection();
+        }
+        
+        // 页面加载完成后初始化
+        window.onload = init;
+    </script>
+</body>
+</html>
