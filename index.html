@@ -355,9 +355,6 @@
             "希望你可以喜欢",
             "这是专属于你的心情树洞",
             "一切的情绪都可以在这里被记录",
-            
-
-
         ];
         
         // 鼓励语库
@@ -378,6 +375,13 @@
         function getRandomQuote() {
             const randomIndex = Math.floor(Math.random() * quotes.length);
             return quotes[randomIndex];
+        }
+        
+        // 语录轮播功能
+        let currentQuoteIndex = 0;
+        function nextQuote() {
+            currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
+            document.getElementById('quoteText').textContent = quotes[currentQuoteIndex];
         }
         
         // 随机获取鼓励语
@@ -602,13 +606,16 @@
         
         // 初始化
         function init() {
-            // 显示随机语录
-            document.getElementById('quoteText').textContent = getRandomQuote();
+            // 显示第一条语录
+            document.getElementById('quoteText').textContent = quotes[0];
             
             // 点击语录卡片刷新
             document.querySelector('.quote-card').addEventListener('click', function() {
-                document.getElementById('quoteText').textContent = getRandomQuote();
+                nextQuote();
             });
+            
+            // 自动轮播，每5秒切换一次
+            setInterval(nextQuote, 5000);
             
             // 渲染日历
             renderCalendar();
